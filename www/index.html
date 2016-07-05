@@ -67,12 +67,28 @@
         function listSMS() {
     		updateData('');
     		
-        	if(SMS) SMS.listSMS({}, function(data){
+        	if(SMS){
+                var filter = {
+                    box : 'inbox', // 'inbox' (default), 'sent', 'draft', 'outbox', 'failed', 'queued', and '' for all
+
+                    // following 4 filters should NOT be used together, they are OR relationship
+                    //read : 0, // 0 for unread SMS, 1 for SMS already read
+                    //_id : 1234, // specify the msg id
+                    address : '+919886817604', // sender's phone number
+                    //body : 'This is a test SMS', // content to match
+
+                    // following 2 filters can be used to list page up/down
+                    //indexFrom : 0, // start from index 0
+                    maxCount : 12, // count of SMS to return each time
+                };
+
+                SMS.listSMS(filter, function(data){
     			updateStatus('sms listed as json array');
     			//updateData( JSON.stringify(data) );
     			
     			var html = "";
         		if(Array.isArray(data)) {
+                    //alert("Total Msgs::"+data.length);
         			for(var i in data) {
         				var sms = data[i];
         				smsList.push(sms);
@@ -84,6 +100,7 @@
         	}, function(err){
         		updateStatus('error list sms: ' + err);
         	});
+            }
         }
         function deleteLastSMS() {
     		updateData('');
